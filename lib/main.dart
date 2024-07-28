@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/dashboard': (context) => DashboardScreen(),
         '/forgotPassword': (context) => ForgotPasswordScreen(),
+        '/class10Subjects': (context) => Class10SubjectsScreen(),
+        '/mathQuestions': (context) => MathQuestionsScreen(),
       },
     );
   }
@@ -231,10 +233,157 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: Text('Flash Learn'),
       ),
       body: Center(
-        child: Text('Welcome to your dashboard!'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Welcome to Flash Learn!'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/class10Subjects');
+              },
+              child: Text('Class 10'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Class10SubjectsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Class 10 Subjects'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Class 10 Subjects',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/mathQuestions');
+              },
+              child: Text('Mathematics'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Handle Physics button press
+              },
+              child: Text('Physics'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Handle Chemistry button press
+              },
+              child: Text('Chemistry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MathQuestionsScreen extends StatefulWidget {
+  @override
+  _MathQuestionsScreenState createState() => _MathQuestionsScreenState();
+}
+
+class _MathQuestionsScreenState extends State<MathQuestionsScreen> {
+  int _selectedOption = -1;
+  bool _answered = false;
+  bool _isCorrect = false;
+
+  void _checkAnswer() {
+    setState(() {
+      _answered = true;
+      _isCorrect =
+          _selectedOption == 1; // Assuming the correct answer is option 1
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mathematics Questions'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'What is 2 + 2?',
+              style: TextStyle(fontSize: 18),
+            ),
+            ListTile(
+              title: Text('3'),
+              leading: Radio(
+                value: 0,
+                groupValue: _selectedOption,
+                onChanged: (int? value) {
+                  setState(() {
+                    _selectedOption = value!;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Text('4'),
+              leading: Radio(
+                value: 1,
+                groupValue: _selectedOption,
+                onChanged: (int? value) {
+                  setState(() {
+                    _selectedOption = value!;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Text('5'),
+              leading: Radio(
+                value: 2,
+                groupValue: _selectedOption,
+                onChanged: (int? value) {
+                  setState(() {
+                    _selectedOption = value!;
+                  });
+                },
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: _checkAnswer,
+                child: Text('Submit Answer'),
+              ),
+            ),
+            if (_answered)
+              Center(
+                child: Text(
+                  _isCorrect ? 'Answer is correct!' : 'Answer is wrong!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: _isCorrect ? Colors.green : Colors.red,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -253,10 +402,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
-    final String savedUsername = arguments['username'];
-    String savedPassword = arguments['password'];
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Forgot Password'),
@@ -268,15 +413,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Username: $savedUsername', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 20),
               TextFormField(
                 controller: _newPasswordController,
                 decoration: InputDecoration(labelText: 'New Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your new password';
+                    return 'Please enter a new password';
                   }
                   return null;
                 },
@@ -287,7 +430,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
+                    return 'Please confirm your new password';
                   }
                   if (value != _newPasswordController.text) {
                     return 'Passwords do not match';
@@ -300,9 +443,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
-                      setState(() {
-                        savedPassword = _newPasswordController.text;
-                      });
+                      setState(() {});
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Password reset successful')),
                       );
